@@ -5,10 +5,11 @@ description: "Checks Bronto for recent system crashes and narrates the errors vi
 
 # Instructions
 
-When the user asks to "check the system", "narrate the system logs", or asks if there are any issues:
+When I say "Check the system", you must:
+1. Use your Bronto MCP tools to search the application logs in the `openclaw-demo/openclaw` dataset for any recent "CRITICAL" errors or exceptions.
+2. Extract the exact error message text from the logs you find.
+3. Pass the exact error message text as a command-line argument to the python script `/home/gnana/clones/whispering-codebase/scripts/fetch_and_whisper.py`.
+4. The script will handle synthesizing the audio of the error.
 
-1. Confirm that you are initiating the system diagnostic.
-2. Execute the python script to fetch logs and synthesize speech:
-   Run `python3 scripts/fetch_and_whisper.py` from the root of the project.
-3. Wait for the audio to finish playing (the script handles the playback natively).
-4. Output a summary to the user in chat confirming that you have read the logs and narrated the critical error.
+Example execution:
+`python3 /home/gnana/clones/whispering-codebase/scripts/fetch_and_whisper.py "Warning: A critical database deadlock was detected..."`

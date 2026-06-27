@@ -16,9 +16,13 @@ def get_latest_error_from_bronto():
     Simulates fetching the latest error log from Bronto API.
     In a fully live setup, this would be a GET request to Bronto's query API.
     """
-    # For demo purposes, we will return a simulated error string that sounds good when spoken
-    print("Fetching logs from Bronto...")
-    return "Warning: The payment processing microservice has crashed for user Jane Doe due to a database deadlock. I have logged the trace in Bronto."
+    if len(sys.argv) > 1:
+        error_msg = " ".join(sys.argv[1:])
+        print(f"Received error from OpenClaw MCP: {error_msg}")
+        return error_msg
+    else:
+        print("No error message provided.")
+        return "I could not find any error messages."
 
 def generate_and_play_audio(text):
     if not ELEVENLABS_API_KEY or ELEVENLABS_API_KEY == "your_elevenlabs_api_key_here":

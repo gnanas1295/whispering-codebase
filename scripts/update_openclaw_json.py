@@ -41,6 +41,19 @@ data["diagnostics"] = {
     }
 }
 
+data["mcp"] = {
+    "servers": {
+        "bronto": {
+            "command": "npx",
+            "args": ["-y", "@bronto/mcp-server"],
+            "env": {
+                "BRONTO_API_KEY": bronto_api_key
+            },
+            "enabled": True
+        }
+    }
+}
+
 with open(openclaw_json_path, "w") as f:
     json.dump(data, f, indent=2)
 
