@@ -19,7 +19,17 @@ When a simulated crash occurs, the error logs are streamed to **Bronto**. **Open
    `ln -s $(pwd)/openclaw_workspace/skills/whispering-codebase ~/.openclaw/workspace/skills/`
 
 ## Usage
-Run the following script to simulate an application crash. It will push a mock log to Bronto and trigger the OpenClaw voice sequence.
+
+### 1. Generating Simulated Production Traffic
+To visualize a realistic production environment in your Bronto dashboard, run the dummy log population script. This will dynamically generate and push **100 simulated production logs** across 4 different microservices (e.g. `payment-service`, `auth-service`, `inventory-service`), complete with randomized user data, IPs, and varied error types (Deadlocks, Timeouts, etc.):
 ```bash
-python scripts/simulate_crash.py
+python3 scripts/populate_dummy_logs.py
 ```
+*Run this anytime before a live demo to populate the Bronto UI with fresh data.*
+
+### 2. Triggering the Voice Sequence
+Run the crash script to push a specific, critical database deadlock error to Bronto:
+```bash
+python3 scripts/simulate_crash.py
+```
+Then, prompt your OpenClaw agent with **"Check the system"** to automatically narrate the crash out loud via ElevenLabs.
