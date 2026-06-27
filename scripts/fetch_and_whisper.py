@@ -60,7 +60,7 @@ def generate_and_play_audio(text):
         try:
             win_path = subprocess.check_output(['wslpath', '-w', mp3_path]).decode().strip()
             ps_command = f"Add-Type -AssemblyName PresentationCore; $player = New-Object System.Windows.Media.MediaPlayer; $player.Open('{win_path}'); $player.Play(); Start-Sleep -s 10"
-            subprocess.run(["powershell.exe", "-c", ps_command])
+            subprocess.run(["/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe", "-c", ps_command])
         except Exception as e:
             print(f"Failed to play audio via PowerShell: {e}")
     else:
