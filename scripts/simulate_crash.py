@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 BRONTO_API_KEY = os.getenv("BRONTO_API_KEY")
-BRONTO_INGEST_URL = os.getenv("BRONTO_INGEST_URL", "https://ingest.bronto.io/v1/logs")
+BRONTO_INGEST_URL = os.getenv("BRONTO_INGEST_URL", "https://ingestion.eu.bronto.io/v1/logs")
 
 def simulate_crash():
     print("Simulating application crash...")
