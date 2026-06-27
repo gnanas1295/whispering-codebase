@@ -20,16 +20,24 @@ else:
     data = {}
 
 data["diagnostics"] = {
-    "telemetry": {
+    "enabled": True,
+    "otel": {
+        "enabled": True,
+        "endpoint": "https://ingestion.eu.bronto.io",
+        "tracesEndpoint": "https://ingestion.eu.bronto.io/v1/traces",
+        "logsEndpoint": "https://ingestion.eu.bronto.io/v1/logs",
+        "metricsEndpoint": "https://ingestion.eu.bronto.io/v1/metrics",
+        "protocol": "http/protobuf",
+        "serviceName": "openclaw-gateway",
+        "headers": {
+            "x-bronto-api-key": bronto_api_key,
+            "x-bronto-dataset": "openclaw",
+            "x-bronto-collection": "openclaw-demo"
+        },
+        "captureContent": True,
+        "traces": True,
         "logs": True,
-        "otlp": {
-            "headers": {
-                "Authorization": f"Bearer {bronto_api_key}"
-            },
-            "logs_endpoint": "https://ingestion.eu.bronto.io/v1/logs",
-            "traces_endpoint": "https://ingestion.eu.bronto.io/v1/traces",
-            "metrics_endpoint": "https://ingestion.eu.bronto.io/v1/metrics"
-        }
+        "metrics": True
     }
 }
 
