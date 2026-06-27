@@ -44,10 +44,10 @@ data["diagnostics"] = {
 data["mcp"] = {
     "servers": {
         "bronto": {
-            "command": "npx",
-            "args": ["-y", "@bronto/mcp-server"],
-            "env": {
-                "BRONTO_API_KEY": bronto_api_key
+            "transport": "streamable-http",
+            "url": "https://mcp.eu.bronto.io",
+            "headers": {
+                "x-bronto-api-key": bronto_api_key
             },
             "enabled": True
         }
