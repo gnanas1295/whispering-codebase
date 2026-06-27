@@ -57,6 +57,10 @@ def simulate_crash():
     
     logger_provider.force_flush()
     print("Flushed OTLP crash log to Bronto!")
+    
+    # Drop a signal file for the watcher daemon
+    with open(".crash_signal", "w") as f:
+        f.write("crash_detected")
 
 if __name__ == "__main__":
     simulate_crash()
