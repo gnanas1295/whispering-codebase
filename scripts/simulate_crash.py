@@ -12,6 +12,8 @@ from opentelemetry.sdk._logs.export import BatchLogRecordProcessor, ConsoleLogEx
 from opentelemetry.exporter.otlp.proto.http._log_exporter import OTLPLogExporter
 from opentelemetry._logs import set_logger_provider
 
+from opentelemetry.sdk.resources import Resource
+
 load_dotenv()
 
 BRONTO_API_KEY = os.getenv("BRONTO_API_KEY")
@@ -20,7 +22,14 @@ if not BRONTO_API_KEY or BRONTO_API_KEY == "your_bronto_api_key_here":
     print("Error: BRONTO_API_KEY is not set.")
     exit(1)
 
-logger_provider = LoggerProvider()
+# Define the OpenTelemetry Resource (this fixes 'unknown_service' in Bronto)
+resource = Resource(attributes={
+    "service.name": "payment-service",
+    "service.version": "1.0.0",
+    "deployment.environment": "production"
+})
+
+logger_provider = LoggerProvider(resource=resource)
 set_logger_provider(logger_provider)
 
 # Set up the Bronto OTLP HTTP Exporter for the EU region
