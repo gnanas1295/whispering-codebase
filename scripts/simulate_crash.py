@@ -1,12 +1,16 @@
 import os
 import time
+import logging
 from dotenv import load_dotenv
 
+# Enable OpenTelemetry internal diagnostic logging to see HTTP errors!
+logging.basicConfig(level=logging.DEBUG)
+os.environ["OTEL_PYTHON_LOG_LEVEL"] = "debug"
+
 from opentelemetry.sdk._logs import LoggerProvider, LoggingHandler
-from opentelemetry.sdk._logs.export import BatchLogRecordProcessor
+from opentelemetry.sdk._logs.export import BatchLogRecordProcessor, ConsoleLogExporter, SimpleLogRecordProcessor
 from opentelemetry.exporter.otlp.proto.http._log_exporter import OTLPLogExporter
 from opentelemetry._logs import set_logger_provider
-import logging
 
 load_dotenv()
 
@@ -16,37 +20,34 @@ if not BRONTO_API_KEY or BRONTO_API_KEY == "your_bronto_api_key_here":
     print("Error: BRONTO_API_KEY is not set.")
     exit(1)
 
-# Initialize OpenTelemetry Logger Provider
 logger_provider = LoggerProvider()
 set_logger_provider(logger_provider)
 
 # Set up the Bronto OTLP HTTP Exporter for the EU region
 exporter = OTLPLogExporter(
     endpoint="https://ingestion.eu.bronto.io/v1/logs",
-    headers={"x-api-key": BRONTO_API_KEY}
+    headers={"Authorization": f"Bearer {BRONTO_API_KEY}"}
 )
 
-logger_provider.add_log_record_processor(BatchLogRecordProcessor(exporter))
+# Use SimpleLogRecordProcessor instead of Batch so it flushes immediately and blocks, showing errors inline
+logger_provider.add_log_record_processor(SimpleLogRecordProcessor(exporter))
+# Also add console exporter so we see what is generated
+logger_provider.add_log_record_processor(SimpleLogRecordProcessor(ConsoleLogExporter()))
 
-# Attach OpenTelemetry to standard Python logging
 handler = LoggingHandler(level=logging.ERROR, logger_provider=logger_provider)
 logging.getLogger().addHandler(handler)
 logger = logging.getLogger("payment-service")
 
 def simulate_crash():
     print("Simulating application crash via standard OpenTelemetry OTLP...")
-    time.sleep(1)
     
     error_message = "CRITICAL: Payment processing microservice crashed. Deadlock detected in Postgres. User: jane.doe@example.com"
     print(f"ERROR GENERATED: {error_message}")
     
-    # Send the log natively through OpenTelemetry
     logger.error(error_message, extra={"environment": "production"})
     
-    # Flush logs to ensure they are sent before the script exits
     logger_provider.force_flush()
-    print("Successfully flushed OTLP crash log to Bronto!")
+    print("Flushed OTLP crash log to Bronto!")
 
 if __name__ == "__main__":
     simulate_crash()
-    print("\nNext Step: Check your Bronto dashboard for the new log!")

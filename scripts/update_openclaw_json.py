@@ -24,7 +24,7 @@ data["diagnostics"] = {
         "logs": True,
         "otlp": {
             "headers": {
-                "x-api-key": bronto_api_key
+                "Authorization": f"Bearer {bronto_api_key}"
             },
             "logs_endpoint": "https://ingestion.eu.bronto.io/v1/logs",
             "traces_endpoint": "https://ingestion.eu.bronto.io/v1/traces",
